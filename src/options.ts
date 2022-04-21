@@ -1,6 +1,7 @@
 import { TokenSchemeOptions } from './runtime';
 
 export interface ModuleOptions {
+  baseURL?: string;
   globalMiddleware?: boolean;
   pinia?: {
     namespace?: string;

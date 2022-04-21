@@ -23,6 +23,7 @@ export class Auth {
     public nuxt: NuxtApp,
     public options: ModuleOptions & { moduleName: string }
   ) {
+    // @ts-ignore
     this.axios = nuxt.$axios;
 
     // @ts-ignore
@@ -83,7 +84,7 @@ export class Auth {
     }
 
     if (process.server) {
-      if (endpoint.baseURL === '') {
+      if ((endpoint.baseURL = this.options.baseURL)) {
         // @ts-ignore
         endpoint.baseURL = requrl(this.req);
       }

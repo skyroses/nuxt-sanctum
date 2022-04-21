@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { defineNuxtModule, addPlugin, addPluginTemplate, addAutoImportDir } from '@nuxt/kit';
+import { defineNuxtModule, addPluginTemplate, addAutoImportDir, createResolver } from '@nuxt/kit';
 import { defaultOptions, ModuleOptions } from './options';
 
 export const moduleName = '@plenexy/nuxt-sanctum';
@@ -17,7 +17,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.build.transpile.push(runtimeDir);
     nuxt.options.alias['#sanctumruntime'] = runtimeDir;
 
-    addAutoImportDir(resolve(runtimeDir, 'core'));
+    addAutoImportDir(resolve(runtimeDir, 'composables'));
 
     addPluginTemplate({
       src: resolve(runtimeDir, 'templates/plugin.mjs'),
