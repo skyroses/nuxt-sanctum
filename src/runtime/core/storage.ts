@@ -1,5 +1,5 @@
 import { NuxtApp } from 'nuxt/app';
-import { defineStore } from 'pinia';
+import { defineStore, Pinia } from 'pinia';
 import { ModuleOptions } from '../../options';
 import { AuthStore } from '..';
 
@@ -13,6 +13,9 @@ export class Storage {
   ) {}
 
   initStore () {
+    // @ts-ignore
+    const pinia: Pinia = this.nuxt.$pinia;
+
     this.store = defineStore(this.options.pinia.namespace, {
       state: () => ({
         user: null,
@@ -48,7 +51,7 @@ export class Storage {
           this.ip = ip;
         }
       }
-    })();
+    })(pinia);
 
     return this;
   }
