@@ -2,7 +2,7 @@ import { defineNuxtRouteMiddleware } from 'nuxt/app';
 import { routeOption } from '../utils';
 import { useAuth } from '../composables/useAuth';
 
-export default defineNuxtRouteMiddleware(async (to) => {
+const middleware = defineNuxtRouteMiddleware(async (to) => {
   const auth = useAuth();
 
   if (!auth) {
@@ -30,3 +30,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
     await auth.redirectTo('toLogin');
   }
 });
+
+export { middleware as AuthMiddleware, middleware as default };
