@@ -1,0 +1,44 @@
+{
+  "name": "@plenexy/nuxt-sanctum",
+  "version": "1.0.4",
+  "author": "skyroses",
+  "license": "MIT",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/skyroses/nuxt-sanctum.git"
+  },
+  "exports": {
+    ".": {
+      "import": "./dist/module.mjs",
+      "require": "./dist/module.cjs"
+    }
+  },
+  "main": "./dist/module.cjs",
+  "types": "./dist/types.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "prepack": "nuxt-module-build",
+    "dev": "nuxi dev playground",
+    "dev:build": "nuxi build playground",
+    "dev:prepare": "nuxt-module-build --stub && nuxi prepare playground",
+    "test": "echo \"No test specified\""
+  },
+  "dependencies": {
+    "@nuxt/kit": "^3.0.0-rc.1",
+    "@nuxtjs-alt/axios": "^1.0.7",
+    "@pinia/nuxt": "^0.1.8",
+    "axios": "^0.26.1",
+    "h3": "^0.7.4",
+    "pinia": "^2.0.13",
+    "vue-router": "^4.0.14"
+  },
+  "devDependencies": {
+    "@nuxt/module-builder": "latest",
+    "@nuxtjs/eslint-config-typescript": "latest",
+    "eslint": "latest",
+    "nuxt": "^3.0.0-rc.1"
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "@nuxtjs/eslint-config-typescript"
+  ],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": [
+      "off"
+    ],
+    "semi": ["error", "always"],
+    "indent": ["error", 2],
+    "indent-legacy": ["error", 2]
+  }
+}
