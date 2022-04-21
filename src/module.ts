@@ -29,7 +29,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.hook('pages:middleware:extend', (middleware) => {
       middleware.push({
         name: 'auth',
-        path: resolve(runtimeDir, 'core/middleware.ts'),
+        path: resolve(runtimeDir, 'core/middleware'),
         global: options.globalMiddleware
       });
     });
