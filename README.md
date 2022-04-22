@@ -145,6 +145,28 @@ const onLogout = async () => await auth.logout();
 </script>
 ```
 
+## Middleware
+
+Example of a page accessible only to an unauthorized user if you have global middleware enabled:
+
+```html
+<script setup>
+  definePageMeta({
+    auth: "guest" // or auth: false
+  });
+</script>
+```
+
+Example of a page accessible only to an authorized user if you have global middleware disabled:
+
+```html
+<script setup>
+  definePageMeta({
+    middleware: "auth"
+  });
+</script>
+```
+
 ## Module Dependencies
 * <a href="https://github.com/Teranode/nuxt-module-alternatives/tree/master/%40nuxtjs-alt/axios">@nuxtjs-alt/axios</a>
 * <a href="https://pinia.vuejs.org/ssr/nuxt.html">@pinia/nuxt</a>
