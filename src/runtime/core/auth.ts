@@ -2,7 +2,7 @@
  * @todo Cookie Scheme
  */
 
-import { NuxtApp } from 'nuxt/app';
+import { NuxtApp, useRouter } from 'nuxt/app';
 import { Router } from 'vue-router';
 import { NuxtAxiosInstance } from '@nuxtjs-alt/axios';
 import { AxiosRequestConfig } from 'axios';
