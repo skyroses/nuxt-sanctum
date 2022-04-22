@@ -3,6 +3,7 @@
  */
 
 import { NuxtApp } from 'nuxt/app';
+import { Router } from 'vue-router';
 import { NuxtAxiosInstance } from '@nuxtjs-alt/axios';
 import { AxiosRequestConfig } from 'axios';
 import { IncomingMessage, ServerResponse } from 'h3';
@@ -13,11 +14,12 @@ import { useAuth } from '../composables/useAuth';
 import { Storage } from './storage';
 
 export class Auth {
-  public req: IncomingMessage;
-  public res: ServerResponse;
   public storage: Storage;
   public scheme: TokenScheme;
   public axios: NuxtAxiosInstance;
+  public router: Router;
+  public req: IncomingMessage;
+  public res: ServerResponse;
 
   constructor (
     public nuxt: NuxtApp,
@@ -30,6 +32,8 @@ export class Auth {
     this.req = nuxt?.ssrContext?.req;
     // @ts-ignore
     this.res = nuxt?.ssrContext?.res;
+
+    this.router = useRouter();
 
     this.storage = new Storage(nuxt, options).initStore();
     this.scheme = this.makeScheme();
@@ -59,19 +63,19 @@ export class Auth {
       }
 
       await this.scheme.refreshToken();
-    } catch (e) {
-      console.log(e);
+    } catch (error) {
+      Promise.reject(error);
     }
   }
 
   async login (payload: any) {
     await this.scheme.login(payload);
-    return await useRouter().push(this.options.redirects.afterLogin);
+    await this.router.push(this.options.redirects.afterLogin);
   }
 
   async logout () {
-    await this.scheme.logout();
-    return await useRouter().push(this.options.redirects.afterLogout);
+    await this.scheme.logout().then();
+    await this.router.push(this.options.redirects.afterLogout);
   }
 
   async request (endpoint: AxiosRequestConfig) {
@@ -83,8 +87,10 @@ export class Auth {
       return;
     }
 
+    endpoint.baseURL = this.options.baseURL;
+
     if (process.server) {
-      if ((endpoint.baseURL = this.options.baseURL)) {
+      if (!endpoint.baseURL) {
         // @ts-ignore
         endpoint.baseURL = requrl(this.req);
       }
@@ -92,11 +98,7 @@ export class Auth {
       endpoint.headers = { ...endpoint.headers, 'User-Agent': this?.req.headers['user-agent'] };
     }
 
-    try {
-      return await this.axios.request(endpoint);
-    } catch (error) {
-      return Promise.reject(error);
-    }
+    return await this.axios.request(endpoint);
   }
 
   async redirectTo (name: keyof typeof defaultOptions.redirects) {

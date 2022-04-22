@@ -43,7 +43,7 @@ export class TokenScheme extends Scheme {
 
     this.reset();
 
-    return await this.tokenRequest(endpoint);
+    return await this.request(endpoint);
   }
 
   updateToken (response: AxiosResponse) {
