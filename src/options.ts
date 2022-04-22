@@ -3,6 +3,10 @@ import { TokenSchemeOptions } from './runtime';
 export interface ModuleOptions {
   baseURL?: string;
   globalMiddleware?: boolean;
+  fingerprint?: {
+    enabled?: boolean;
+    property?: string;
+  };
   pinia?: {
     namespace?: string;
   };
@@ -17,6 +21,10 @@ export interface ModuleOptions {
 
 export const defaultOptions: ModuleOptions = {
   globalMiddleware: true,
+  fingerprint: {
+    enabled: true,
+    property: 'fingerprint'
+  },
   pinia: {
     namespace: 'auth'
   },

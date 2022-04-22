@@ -11,7 +11,12 @@ export default defineNuxtModule<ModuleOptions>({
     configKey: 'sanctum'
   },
   defaults: defaultOptions,
-  setup (options, nuxt) {
+  setup (_options, nuxt) {
+    const options: ModuleOptions = {
+      ...defaultOptions,
+      ..._options
+    };
+
     const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url));
 
     nuxt.options.build.transpile.push(runtimeDir);

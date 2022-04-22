@@ -57,7 +57,7 @@ export class Auth {
 
   async run () {
     try {
-      if (process.server) {
+      if (process.server && this.options.fingerprint.enabled) {
         const fingerprint = this.generateFingerprint();
         this.storage.store.setFingerprint(fingerprint);
       }
@@ -74,7 +74,7 @@ export class Auth {
   }
 
   async logout () {
-    await this.scheme.logout().then();
+    await this.scheme.logout();
     await this.router.push(this.options.redirects.afterLogout);
   }
 
@@ -88,6 +88,13 @@ export class Auth {
     }
 
     endpoint.baseURL = this.options.baseURL;
+
+    if (this.options.fingerprint.enabled && this.storage.store.fingerprint) {
+      endpoint.data = {
+        ...endpoint.data,
+        [this.options.fingerprint.property]: this.storage.store.fingerprint
+      };
+    }
 
     if (process.server) {
       if (!endpoint.baseURL) {

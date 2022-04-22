@@ -115,6 +115,30 @@ interface ModuleOptions {
 ```
 </details>
 
+<details>
+<summary>Default configuration values</summary>
+The values for the parameters from the configuration that you skip will be taken from the default configuration.
+
+```typescript
+{
+  globalMiddleware: true,
+  fingerprint: {
+    enabled: true,
+    property: 'fingerprint'
+  },
+  pinia: {
+    namespace: 'auth'
+  },
+  redirects: {
+    home: '/',
+    toLogin: '/auth/login',
+    afterLogin: '/',
+    afterLogout: '/'
+  }
+}
+```
+</details>
+
 ## Example
 
 ```html
@@ -166,6 +190,11 @@ Example of a page accessible only to an authorized user if you have global middl
   });
 </script>
 ```
+
+## Fingerprint
+
+Nuxt-sanctum generates a unique client ID based on its IP address and user-agent. It can be used to implement multiple authorization sessions and cancel them at the user's choice (for example, to view active sessions).  
+You can disable the generation and sending of the parameter to your endpoints or change the name of the parameter using the appropriate configuration (*fingerprint.enabled* and *fingerprint.property*).
 
 ## Module Dependencies
 * <a href="https://github.com/Teranode/nuxt-module-alternatives/tree/master/%40nuxtjs-alt/axios">@nuxtjs-alt/axios</a>

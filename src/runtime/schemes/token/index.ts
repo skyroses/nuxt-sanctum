@@ -101,11 +101,6 @@ export class TokenScheme extends Scheme {
   request (endpoint: AxiosRequestConfig): Promise<AxiosResponse> {
     this.options.token.prefix ??= 'Bearer';
 
-    endpoint.data = {
-      ...endpoint.data,
-      fingerprint: this.auth.storage.store.fingerprint
-    };
-
     if (this.token) {
       this.axios.setToken(this.token, this.options.token.prefix);
     }
