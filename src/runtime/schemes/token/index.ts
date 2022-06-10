@@ -1,4 +1,3 @@
-import { NuxtAxiosInstance } from '@nuxtjs-alt/axios';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { appendHeader } from 'h3';
 import { Auth } from '../../core/auth';
@@ -10,7 +9,6 @@ import { } from 'nuxt/app';
 export class TokenScheme extends Scheme {
   constructor (
     protected auth: Auth,
-    protected axios: NuxtAxiosInstance,
     protected options: TokenSchemeOptions
   ) {
     super();
@@ -49,7 +47,7 @@ export class TokenScheme extends Scheme {
   updateToken (response: AxiosResponse) {
     this.token = <string>getProp(response.data, this.options.token.property);
     this.expiredAt = new Date(<string>getProp(response.data, this.options.token.expiredAtProperty));
-    this.axios.setToken(this.token, String(this.options.token.prefix ?? 'Bearer'));
+    this.auth.axios.setToken(this.token, String(this.options.token.prefix ?? 'Bearer'));
   }
 
   async fetchUser () {
@@ -59,7 +57,7 @@ export class TokenScheme extends Scheme {
   }
 
   clearToken (): void {
-    this.axios.setHeader(this.options.token.headerName, null);
+    this.auth.axios.setHeader(this.options.token.headerName, null);
   }
 
   reset (): void {
@@ -102,10 +100,10 @@ export class TokenScheme extends Scheme {
     this.options.token.prefix ??= 'Bearer';
 
     if (this.token) {
-      this.axios.setToken(this.token, this.options.token.prefix);
+      this.auth.axios.setToken(this.token, this.options.token.prefix);
     }
 
-    return this.auth.request(endpoint);
+    return this.auth.axios.request(endpoint);
   }
 
   check () {

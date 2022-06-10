@@ -4,7 +4,6 @@
 
 import { NuxtApp, useRouter } from 'nuxt/app';
 import { Router } from 'vue-router';
-import { NuxtAxiosInstance } from '@nuxtjs-alt/axios';
 import { AxiosRequestConfig } from 'axios';
 import { IncomingMessage, ServerResponse } from 'h3';
 import { defaultOptions, ModuleOptions } from '../../options';
@@ -16,7 +15,6 @@ import { Storage } from './storage';
 export class Auth {
   public storage: Storage;
   public scheme: TokenScheme;
-  public axios: NuxtAxiosInstance;
   public router: Router;
   public req: IncomingMessage;
   public res: ServerResponse;
@@ -25,9 +23,6 @@ export class Auth {
     public nuxt: NuxtApp,
     public options: ModuleOptions & { moduleName: string }
   ) {
-    // @ts-ignore
-    this.axios = nuxt.$axios;
-
     // @ts-ignore
     this.req = nuxt?.ssrContext?.req;
     // @ts-ignore
@@ -55,6 +50,10 @@ export class Auth {
     return this.storage.store.token;
   }
 
+  get axios () {
+    return this.nuxt.$axios;
+  }
+
   async run () {
     try {
       if (process.server && this.options.fingerprint.enabled) {
@@ -69,13 +68,13 @@ export class Auth {
   }
 
   async login (payload: any) {
+    this.redirectTo('afterLogout');
     await this.scheme.login(payload);
-    await this.router.push(this.options.redirects.afterLogin);
   }
 
   async logout () {
-    await this.scheme.logout();
     await this.router.push(this.options.redirects.afterLogout);
+    await this.scheme.logout();
   }
 
   async request (endpoint: AxiosRequestConfig) {
@@ -109,18 +108,15 @@ export class Auth {
   }
 
   async redirectTo (name: keyof typeof defaultOptions.redirects) {
-    const to = this.options.redirects[name];
+    return await this.router.push(this.getRedirectRoute(name));
+  }
 
-    if (process.server) {
-      return await navigateTo(to);
-    }
-
-    // @ts-ignore
-    return await this.nuxt.$router.push(to);
+  getRedirectRoute (name: keyof typeof defaultOptions.redirects) {
+    return this.options.redirects[name];
   }
 
   private makeScheme () {
-    return new TokenScheme(this, this.axios, this.options.tokenScheme);
+    return new TokenScheme(this, this.options.tokenScheme);
   }
 
   private generateFingerprint () {

@@ -27,8 +27,8 @@
     "test": "echo \"No test specified\""
   },
   "dependencies": {
-    "@nuxt/kit": "^3.0.0-rc.1",
-    "@nuxtjs-alt/axios": "^1.0.7",
+    "@nuxt/kit": "^3.0.0-rc.3",
+    "@nuxtjs-alt/axios": "^1.0.12",
     "@pinia/nuxt": "^0.1.8",
     "axios": "^0.26.1",
     "h3": "^0.7.4",
@@ -39,6 +39,6 @@
     "@nuxt/module-builder": "latest",
     "@nuxtjs/eslint-config-typescript": "latest",
     "eslint": "latest",
-    "nuxt": "^3.0.0-rc.1"
+    "nuxt": "^3.0.0-rc.3"
   }
 }
