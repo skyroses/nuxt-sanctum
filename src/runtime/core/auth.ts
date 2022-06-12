@@ -10,6 +10,7 @@ import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme } from '../schemes';
 import { sha256 } from '../utils';
 import { useAuth } from '../composables/useAuth';
+import { User } from '../types';
 import { Storage } from './storage';
 
 export class Auth {
@@ -34,11 +35,11 @@ export class Auth {
     this.scheme = this.makeScheme();
   }
 
-  get user (): any {
+  get user (): User {
     return this.storage.store.user;
   }
 
-  set user (payload: any) {
+  set user (payload: User) {
     this.storage.store.setUser(payload);
   }
 

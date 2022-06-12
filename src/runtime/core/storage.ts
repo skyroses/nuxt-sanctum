@@ -2,6 +2,7 @@ import { NuxtApp } from 'nuxt/app';
 import { defineStore, Pinia } from 'pinia';
 import { ModuleOptions } from '../../options';
 import { AuthStore } from '..';
+import { User } from '../types';
 
 export class Storage {
   public store: AuthStore;
@@ -26,7 +27,7 @@ export class Storage {
         ip: null
       }),
       actions: {
-        setUser (user: any) {
+        setUser (user: User) {
           this.user = user;
           this.loggedIn = !!user;
         },

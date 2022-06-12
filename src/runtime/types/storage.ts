@@ -1,7 +1,8 @@
 import { Store } from 'pinia';
+import { User } from './user';
 
 export interface StorageOptions {
-    user: any;
+    user: User;
     loggedIn: boolean;
     token: string;
     expired_at?: Date;
@@ -10,7 +11,7 @@ export interface StorageOptions {
 };
 
 export interface StorageActions {
-    setUser: (user: any) => void;
+    setUser: (user: User) => void;
     setLoggedIn: (status: boolean) => void;
     setToken: (token?: string) => void;
     setExpiredAt: (expired_at?: string | Date) => void;
