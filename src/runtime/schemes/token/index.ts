@@ -1,8 +1,9 @@
-import { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import { appendHeader } from 'h3';
 import { Auth } from '../../core/auth';
 import { getProp } from '../../utils';
 import { Scheme } from '../scheme';
+import { SanctumAuthResponse } from '../../types';
 import { TokenSchemeOptions } from './types';
 import { } from 'nuxt/app';
 
@@ -14,7 +15,7 @@ export class TokenScheme extends Scheme {
     super();
   }
 
-  async login (payload: any): Promise<AxiosResponse | void> {
+  async login (payload: any) {
     const endpoint = this.options.endpoints.login;
 
     if (!endpoint) {
@@ -32,7 +33,7 @@ export class TokenScheme extends Scheme {
     return response;
   }
 
-  async logout (): Promise<AxiosResponse | void> {
+  logout () {
     const endpoint = this.options.endpoints.logout;
 
     if (!endpoint) {
@@ -41,10 +42,10 @@ export class TokenScheme extends Scheme {
 
     this.reset();
 
-    return await this.request(endpoint);
+    return this.request(endpoint);
   }
 
-  updateToken (response: AxiosResponse) {
+  updateToken (response: SanctumAuthResponse) {
     this.token = <string>getProp(response.data, this.options.token.property);
     this.expiredAt = new Date(<string>getProp(response.data, this.options.token.expiredAtProperty));
     this.auth.axios.setToken(this.token, String(this.options.token.prefix ?? 'Bearer'));
@@ -96,14 +97,14 @@ export class TokenScheme extends Scheme {
     } catch (e) {}
   }
 
-  request (endpoint: AxiosRequestConfig): Promise<AxiosResponse> {
+  request (endpoint: AxiosRequestConfig) {
     this.options.token.prefix ??= 'Bearer';
 
     if (this.token) {
       this.auth.axios.setToken(this.token, this.options.token.prefix);
     }
 
-    return this.auth.axios.request(endpoint);
+    return this.auth.request(endpoint);
   }
 
   check () {

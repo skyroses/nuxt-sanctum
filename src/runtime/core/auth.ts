@@ -2,6 +2,7 @@
  * @todo Cookie Scheme
  */
 
+import requrl from 'requrl';
 import { NuxtApp, useRouter } from 'nuxt/app';
 import { Router } from 'vue-router';
 import { AxiosRequestConfig } from 'axios';
@@ -10,7 +11,7 @@ import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme } from '../schemes';
 import { sha256 } from '../utils';
 import { useAuth } from '../composables/useAuth';
-import { User } from '../types';
+import { SanctumAuthResponse, User } from '../types';
 import { Storage } from './storage';
 
 export class Auth {
@@ -69,16 +70,16 @@ export class Auth {
   }
 
   async login (payload: any) {
-    this.redirectTo('afterLogout');
     await this.scheme.login(payload);
+    await this.redirectTo('afterLogin');
   }
 
   async logout () {
-    await this.router.push(this.options.redirects.afterLogout);
+    await this.redirectTo('afterLogout');
     await this.scheme.logout();
   }
 
-  async request (endpoint: AxiosRequestConfig) {
+  async request (endpoint: AxiosRequestConfig): Promise<SanctumAuthResponse> {
     if (!this.axios) {
       console.error(
         `[${this.options.moduleName}] Axios module not found`
@@ -98,7 +99,6 @@ export class Auth {
 
     if (process.server) {
       if (!endpoint.baseURL) {
-        // @ts-ignore
         endpoint.baseURL = requrl(this.req);
       }
 
