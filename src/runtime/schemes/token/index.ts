@@ -1,11 +1,9 @@
 import { AxiosRequestConfig } from 'axios';
-import { appendHeader } from 'h3';
 import { Auth } from '../../core/auth';
 import { getProp } from '../../utils';
 import { Scheme } from '../scheme';
 import { SanctumAuthResponse } from '../../types';
 import { TokenSchemeOptions } from './types';
-import { } from 'nuxt/app';
 
 export class TokenScheme extends Scheme {
   constructor (
@@ -80,14 +78,11 @@ export class TokenScheme extends Scheme {
     this.reset();
 
     try {
-      const response = await this.tokenRequest(endpoint).then((response) => {
-        if (process.server) {
-          // @ts-ignore
-          appendHeader(this.auth.nuxt.ssrContext.res, 'set-cookie', response.headers['set-cookie'] ?? []);
-        }
+      const response = await this.tokenRequest(endpoint);
 
-        return Promise.resolve(response);
-      });
+      if (process.server) {
+        this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
+      }
 
       if (!response) {
         return;

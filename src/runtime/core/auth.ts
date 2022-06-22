@@ -56,17 +56,13 @@ export class Auth {
     return this.nuxt.$axios;
   }
 
-  async run () {
-    try {
-      if (process.server && this.options.fingerprint.enabled) {
-        const fingerprint = this.generateFingerprint();
-        this.storage.store.setFingerprint(fingerprint);
-      }
-
-      await this.scheme.refreshToken();
-    } catch (error) {
-      Promise.reject(error);
+  run () {
+    if (process.server && this.options.fingerprint.enabled) {
+      const fingerprint = this.generateFingerprint();
+      this.storage.store.setFingerprint(fingerprint);
     }
+
+    return this.scheme.refreshToken();
   }
 
   async login (payload: any) {
