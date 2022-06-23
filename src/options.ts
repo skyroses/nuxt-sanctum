@@ -21,6 +21,12 @@ export interface ModuleOptions {
 
 export const defaultOptions: ModuleOptions = {
   globalMiddleware: true,
+  tokenScheme: {
+    token: {
+      headerName: 'Authorization',
+      property: 'access_token'
+    }
+  },
   fingerprint: {
     enabled: true,
     property: 'fingerprint'

@@ -1,13 +1,13 @@
 import { AxiosRequestConfig } from 'axios';
 
 export interface TokenSchemeOptions {
-    endpoints: {
+    endpoints?: {
         login: AxiosRequestConfig;
         user: AxiosRequestConfig;
         refresh?: AxiosRequestConfig | false;
         logout?: AxiosRequestConfig | false;
     },
-    user: {
+    user?: {
         property?: string | false;
     },
     token: {

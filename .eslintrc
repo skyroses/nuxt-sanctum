@@ -6,6 +6,7 @@
     "@typescript-eslint/no-unused-vars": [
       "off"
     ],
+    "no-useless-constructor":"off",
     "semi": ["error", "always"],
     "indent": ["error", 2],
     "indent-legacy": ["error", 2]

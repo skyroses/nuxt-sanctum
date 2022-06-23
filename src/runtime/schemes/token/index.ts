@@ -8,7 +8,7 @@ import { TokenSchemeOptions } from './types';
 export class TokenScheme extends Scheme {
   constructor (
     protected auth: Auth,
-    protected options: TokenSchemeOptions
+    public options: TokenSchemeOptions
   ) {
     super();
   }
@@ -40,23 +40,22 @@ export class TokenScheme extends Scheme {
 
     this.reset();
 
-    return this.request(endpoint);
+    return this.auth.request(endpoint);
   }
 
   updateToken (response: SanctumAuthResponse) {
     this.token = <string>getProp(response.data, this.options.token.property);
     this.expiredAt = new Date(<string>getProp(response.data, this.options.token.expiredAtProperty));
-    this.auth.axios.setToken(this.token, String(this.options.token.prefix ?? 'Bearer'));
   }
 
   async fetchUser () {
-    const response = await this.request(this.options.endpoints.user);
+    const response = await this.auth.request(this.options.endpoints.user);
 
     this.auth.user = getProp(response.data, this.options.user.property);
   }
 
   clearToken (): void {
-    this.auth.axios.setHeader(this.options.token.headerName, null);
+    this.token = null;
   }
 
   reset (): void {
@@ -80,26 +79,16 @@ export class TokenScheme extends Scheme {
     try {
       const response = await this.tokenRequest(endpoint);
 
-      if (process.server) {
-        this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
-      }
-
       if (!response) {
         return;
       }
 
+      if (process.server && !this.auth.res.writableEnded) {
+        this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
+      }
+
       await this.fetchUser();
     } catch (e) {}
-  }
-
-  request (endpoint: AxiosRequestConfig) {
-    this.options.token.prefix ??= 'Bearer';
-
-    if (this.token) {
-      this.auth.axios.setToken(this.token, this.options.token.prefix);
-    }
-
-    return this.auth.request(endpoint);
   }
 
   check () {
@@ -125,7 +114,7 @@ export class TokenScheme extends Scheme {
   }
 
   private async tokenRequest (endpoint: AxiosRequestConfig) {
-    const response = await this.request(endpoint);
+    const response = await this.auth.request(endpoint);
 
     this.updateToken(response);
 

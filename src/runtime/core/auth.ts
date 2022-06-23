@@ -13,6 +13,7 @@ import { sha256 } from '../utils';
 import { useAuth } from '../composables/useAuth';
 import { SanctumAuthResponse, User } from '../types';
 import { Storage } from './storage';
+import { RequestHandler } from './request';
 
 export class Auth {
   public storage: Storage;
@@ -20,6 +21,7 @@ export class Auth {
   public router: Router;
   public req: IncomingMessage;
   public res: ServerResponse;
+  public requestHandler: RequestHandler;
 
   constructor (
     public nuxt: NuxtApp,
@@ -34,6 +36,7 @@ export class Auth {
 
     this.storage = new Storage(nuxt, options).initStore();
     this.scheme = this.makeScheme();
+    this.requestHandler = new RequestHandler(this);
   }
 
   get user (): User {
@@ -75,33 +78,8 @@ export class Auth {
     await this.scheme.logout();
   }
 
-  async request (endpoint: AxiosRequestConfig): Promise<SanctumAuthResponse> {
-    if (!this.axios) {
-      console.error(
-        `[${this.options.moduleName}] Axios module not found`
-      );
-
-      return;
-    }
-
-    endpoint.baseURL = this.options.baseURL;
-
-    if (this.options.fingerprint.enabled && this.storage.store.fingerprint) {
-      endpoint.data = {
-        ...endpoint.data,
-        [this.options.fingerprint.property]: this.storage.store.fingerprint
-      };
-    }
-
-    if (process.server) {
-      if (!endpoint.baseURL) {
-        endpoint.baseURL = requrl(this.req);
-      }
-
-      endpoint.headers = { ...endpoint.headers, 'User-Agent': this?.req.headers['user-agent'] };
-    }
-
-    return await this.axios.request(endpoint);
+  request (endpoint: AxiosRequestConfig) {
+    return this.requestHandler.send(endpoint);
   }
 
   async redirectTo (name: keyof typeof defaultOptions.redirects) {
