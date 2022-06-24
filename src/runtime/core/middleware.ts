@@ -15,17 +15,19 @@ const middleware = defineNuxtRouteMiddleware(async (to) => {
     const { tokenExpired } = auth.scheme.check();
 
     if (tokenExpired) {
-      return await auth.scheme.refreshToken().catch(async () => {
+      try {
+        await auth.scheme.refreshToken();
+      } catch {
         auth.scheme.reset();
-        return await navigateTo(auth.getRedirectRoute('toLogin'));
-      });
+        return navigateTo(auth.getRedirectRoute('toLogin'));
+      }
     }
 
     if (guestMode) {
-      return await navigateTo(auth.getRedirectRoute('home'));
+      return navigateTo(auth.getRedirectRoute('home'));
     }
   } else if (!guestMode) {
-    return await navigateTo(auth.getRedirectRoute('toLogin'));
+    return navigateTo(auth.getRedirectRoute('toLogin'));
   }
 });
 
