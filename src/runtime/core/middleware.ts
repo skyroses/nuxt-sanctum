@@ -1,4 +1,4 @@
-import { defineNuxtRouteMiddleware } from 'nuxt/app';
+import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app';
 import { routeOption } from '../utils';
 import { useAuth } from '../composables/useAuth';
 
