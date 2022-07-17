@@ -11,7 +11,7 @@ import { RouteLocationNormalized } from 'vue-router';
  */
 export function getProp (
   holder: Record<string, any>,
-  propName: string | false
+  propName?: string | false
 ): unknown {
   if (!propName || !holder || typeof holder !== 'object') {
     return holder;
@@ -25,7 +25,7 @@ export function getProp (
     ? propName
     : (propName + '').split('.');
 
-  let result: unknown = holder;
+  let result: any = holder;
   while (propParts.length && result) {
     result = result[propParts.shift()];
   }

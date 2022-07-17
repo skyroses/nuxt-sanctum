@@ -52,8 +52,7 @@ export class TokenScheme extends Scheme {
 
   async fetchUser () {
     const response = await this.auth.request(this.options.endpoints!.user);
-
-    this.auth.user = getProp(response.data, String(this.options.user?.property)) as User;
+    this.auth.user = getProp(response.data, this.options.user?.property) as User;
   }
 
   clearToken (): void {
