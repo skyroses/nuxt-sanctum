@@ -8,7 +8,7 @@ import { Router } from 'vue-router';
 import { AxiosRequestConfig } from 'axios';
 import { IncomingMessage, ServerResponse } from 'h3';
 import { defaultOptions, ModuleOptions } from '../../options';
-import { TokenScheme } from '../schemes';
+import { TokenScheme, TokenSchemeOptions } from '../schemes';
 import { sha256 } from '../utils';
 import { useAuth } from '../composables/useAuth';
 import { SanctumAuthResponse, User } from '../types';
@@ -28,22 +28,22 @@ export class Auth {
     public options: ModuleOptions & { moduleName: string }
   ) {
     // @ts-ignore
-    this.req = nuxt?.ssrContext?.req;
+    this.req = nuxt?.ssrContext?.event.req;
     // @ts-ignore
-    this.res = nuxt?.ssrContext?.res;
+    this.res = nuxt?.ssrContext?.event.res;
 
     this.router = useRouter();
 
     this.storage = new Storage(nuxt, options).initStore();
-    this.scheme = this.makeScheme();
     this.requestHandler = new RequestHandler(this);
+    this.scheme = this.makeScheme(options.tokenScheme);
   }
 
-  get user (): User {
+  get user () {
     return this.storage.store.user;
   }
 
-  set user (payload: User) {
+  set user (payload: User | null) {
     this.storage.store.setUser(payload);
   }
 
@@ -51,7 +51,7 @@ export class Auth {
     return this.storage.store.loggedIn;
   }
 
-  get token (): string {
+  get token () {
     return this.storage.store.token;
   }
 
@@ -60,7 +60,7 @@ export class Auth {
   }
 
   run () {
-    if (process.server && this.options.fingerprint.enabled) {
+    if (process.server && this.options.fingerprint?.enabled) {
       const fingerprint = this.generateFingerprint();
       this.storage.store.setFingerprint(fingerprint);
     }
@@ -90,15 +90,11 @@ export class Auth {
     return this.options.redirects[name];
   }
 
-  private makeScheme () {
-    return new TokenScheme(this, this.options.tokenScheme);
+  private makeScheme (options: TokenSchemeOptions) {
+    return new TokenScheme(this, options);
   }
 
   private generateFingerprint () {
-    if (process.client) {
-      return null;
-    }
-
     const userAgent = this.req.headers['user-agent'];
     const ip = this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress;
 

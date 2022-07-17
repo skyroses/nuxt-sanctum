@@ -17,27 +17,27 @@ export class Storage {
     // @ts-ignore
     const pinia: Pinia = this.nuxt.$pinia;
 
-    this.store = defineStore(this.options.pinia.namespace, {
+    this.store = defineStore(String(this.options.pinia!.namespace), {
       state: () => ({
         user: null,
         loggedIn: false,
         token: null,
         expired_at: null,
         fingerprint: null,
-        ip: null
+        ip: ''
       }),
       actions: {
-        setUser (user: User) {
+        setUser (user: User | null) {
           this.user = user;
           this.loggedIn = !!user;
         },
         setLoggedIn (status: boolean) {
           this.loggedIn = status;
         },
-        setToken (token?: string) {
+        setToken (token?: string | null) {
           this.token = token;
         },
-        setExpiredAt (expiredAt?: string | Date) {
+        setExpiredAt (expiredAt?: string | Date | null) {
           if (expiredAt instanceof String) {
             this.expired_at = new Date(expiredAt);
             return;
@@ -45,7 +45,7 @@ export class Storage {
 
           this.expired_at = expiredAt;
         },
-        setFingerprint (fingerprint: string) {
+        setFingerprint (fingerprint: string | null) {
           this.fingerprint = fingerprint;
         },
         setIPAddress (ip: string) {

@@ -29,10 +29,10 @@
   "dependencies": {
     "@nuxt/kit": "^3.0.0-rc.5",
     "@nuxtjs-alt/axios": "^1.0.12",
-    "@pinia/nuxt": "^0.1.8",
+    "@pinia/nuxt": "^0.3.0",
     "axios": "^0.26.1",
     "h3": "^0.7.4",
-    "pinia": "^2.0.13",
+    "pinia": "^2.0.16",
     "requrl": "^3.0.2",
     "vue-router": "^4.0.14"
   },

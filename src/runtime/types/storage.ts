@@ -2,18 +2,18 @@ import { Store } from 'pinia';
 import { User } from './user';
 
 export interface StorageOptions {
-    user: User;
+    user: User | null;
     loggedIn: boolean;
-    token: string;
-    expired_at?: Date;
-    fingerprint: string;
+    token: string | null;
+    expired_at?: Date | null;
+    fingerprint?: string | null;
     ip: string;
 };
 
 export interface StorageActions {
-    setUser: (user: User) => void;
+    setUser: (user: User | null) => void;
     setLoggedIn: (status: boolean) => void;
-    setToken: (token?: string) => void;
+    setToken: (token?: string | null) => void;
     setExpiredAt: (expired_at?: string | Date) => void;
     setFingerprint: (fingerprint: string) => void;
     setIPAddress: (ip: string) => void;

@@ -16,7 +16,7 @@ export interface ModuleOptions {
     afterLogin: string;
     afterLogout: string;
   },
-  tokenScheme?: TokenSchemeOptions
+  tokenScheme: TokenSchemeOptions
 };
 
 export const defaultOptions: ModuleOptions = {
