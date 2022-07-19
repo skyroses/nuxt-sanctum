@@ -1,6 +1,6 @@
 import { resolve } from 'path';
 import { fileURLToPath } from 'url';
-import { defineNuxtModule, addPluginTemplate, addAutoImportDir, createResolver } from '@nuxt/kit';
+import { defineNuxtModule, addPluginTemplate, createResolver, addAutoImport } from '@nuxt/kit';
 import { defaultOptions, ModuleOptions } from './options';
 
 export const moduleName = '@plenexy/nuxt-sanctum';
@@ -17,15 +17,22 @@ export default defineNuxtModule<ModuleOptions>({
       ..._options
     };
 
-    const runtimeDir = fileURLToPath(new URL('./runtime', import.meta.url));
+    const resolver = createResolver(import.meta.url)
+    const runtimeDir = resolver.resolve('./runtime');
 
     nuxt.options.build.transpile.push(runtimeDir);
     nuxt.options.alias['#sanctumruntime'] = runtimeDir;
 
-    addAutoImportDir(resolve(runtimeDir, 'composables'));
+    const composables = resolver.resolve(runtimeDir, 'composables');
+
+    addAutoImport([
+      {
+        from: composables, name: 'useAuth'
+      }
+    ]);
 
     addPluginTemplate({
-      src: resolve(runtimeDir, 'templates/plugin.mjs'),
+      src: resolver.resolve(runtimeDir, 'templates/plugin.mjs'),
       options: {
         ...options
       }
@@ -34,7 +41,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.hook('app:resolve', (app) => {
       app.middleware.push({
         name: 'auth',
-        path: resolve(runtimeDir, 'core/middleware'),
+        path: resolver.resolve(runtimeDir, 'core/middleware'),
         global: options.globalMiddleware
       });
     });
