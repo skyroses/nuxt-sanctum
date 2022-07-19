@@ -1,7 +1,7 @@
 import { AxiosRequestConfig } from 'axios';
-import requrl from 'requrl';
 import { SanctumAuthResponse } from '../types';
 import { Auth } from './auth';
+import requrl from 'requrl';
 
 export class RequestHandler {
   constructor (
@@ -12,7 +12,6 @@ export class RequestHandler {
 
   onRequest (config: AxiosRequestConfig<any>) {
     if (this.auth.token) {
-      // @ts-ignore
       config.headers.common[this.auth.scheme.options.token.headerName] = String(`${this.auth.scheme.options.token.prefix ?? 'Bearer'} ${this.auth.token}`).trim();
     }
 

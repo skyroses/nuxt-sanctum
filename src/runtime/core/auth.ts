@@ -2,7 +2,6 @@
  * @todo Cookie Scheme
  */
 
-import requrl from 'requrl';
 import { NuxtApp, useRouter } from 'nuxt/app';
 import { Router } from 'vue-router';
 import { AxiosRequestConfig } from 'axios';
@@ -10,8 +9,7 @@ import { IncomingMessage, ServerResponse } from 'h3';
 import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme, TokenSchemeOptions } from '../schemes';
 import { sha256 } from '../utils';
-import { useAuth } from '../composables/useAuth';
-import { SanctumAuthResponse, User } from '../types';
+import { User } from '../types';
 import { Storage } from './storage';
 import { RequestHandler } from './request';
 
@@ -104,5 +102,3 @@ export class Auth {
     ].join('|'));
   }
 }
-
-export { useAuth };
