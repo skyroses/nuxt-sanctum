@@ -18,13 +18,11 @@ export default defineNuxtModule<ModuleOptions>({
     };
 
     const resolver = createResolver(import.meta.url)
-    const runtimeDir = resolver.resolve('./runtime');
 
-    nuxt.options.build.transpile.push(runtimeDir);
-    nuxt.options.alias['#sanctumruntime'] = runtimeDir;
+    nuxt.options.build.transpile.push(resolver.resolve('./runtime'));
+    nuxt.options.alias['#sanctumruntime'] = resolver.resolve('./runtime');;
 
-    const composables = resolver.resolve(runtimeDir, 'composables');
-
+    const composables = resolver.resolve('./runtime/composables/use-auth');
     addAutoImport([
       {
         from: composables, name: 'useAuth'
@@ -32,7 +30,7 @@ export default defineNuxtModule<ModuleOptions>({
     ]);
 
     addPluginTemplate({
-      src: resolver.resolve(runtimeDir, 'templates/plugin.mjs'),
+      src: resolver.resolve('./runtime/templates/plugin.mjs'),
       options: {
         ...options
       }
@@ -41,7 +39,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.hook('app:resolve', (app) => {
       app.middleware.push({
         name: 'auth',
-        path: resolver.resolve(runtimeDir, 'core/middleware'),
+        path: resolver.resolve('./runtime/core/middleware'),
         global: options.globalMiddleware
       });
     });

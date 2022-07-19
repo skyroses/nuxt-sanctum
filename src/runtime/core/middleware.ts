@@ -1,6 +1,6 @@
 import { defineNuxtRouteMiddleware, navigateTo } from 'nuxt/app';
 import { routeOption } from '../utils';
-import { useAuth } from '../composables/useAuth';
+import { useAuth } from '../composables/use-auth';
 
 const middleware = defineNuxtRouteMiddleware(async (to) => {
   const auth = useAuth();
