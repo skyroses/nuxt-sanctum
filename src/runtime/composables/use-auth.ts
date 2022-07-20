@@ -1,4 +1,4 @@
-import { useNuxtApp } from 'nuxt/app';
+import { useNuxtApp } from '#app';
 import { Auth } from '../core/auth';
 
 export const useAuth = () => {
