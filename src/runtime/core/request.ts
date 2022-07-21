@@ -1,7 +1,7 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
+import requrl from 'requrl';
 import { SanctumAuthResponse } from '../types';
 import { Auth } from './auth';
-import requrl from 'requrl';
 
 export class RequestHandler {
   constructor (
@@ -18,7 +18,11 @@ export class RequestHandler {
     return config;
   }
 
-  onError (error: any) {
+  onError (error: AxiosError) {
+    if (this.auth.options.onError) {
+      this.auth.options.onError(error);
+    }
+
     return Promise.reject(error);
   }
 

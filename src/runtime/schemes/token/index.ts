@@ -65,10 +65,6 @@ export class TokenScheme extends Scheme {
   }
 
   async refreshToken () {
-    if (process.client) {
-      return;
-    }
-
     const endpoint = this.options.endpoints?.refresh;
 
     if (!endpoint) {
@@ -89,7 +85,11 @@ export class TokenScheme extends Scheme {
       }
 
       await this.fetchUser();
-    } catch (e) {}
+    } catch (e) {
+      if (this.auth.options.onError) {
+        this.auth.options.onError(e);
+      }
+    }
   }
 
   check () {

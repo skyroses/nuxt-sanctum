@@ -61,8 +61,20 @@ export function routeOption (
 /**
  *
  * @param {string} value
- * @return string
+ * @return {string}
  */
 export function sha256 (value: string): string {
   return crypto.createHash('sha256').update(value).digest('hex');
+}
+
+/**
+ *
+ * @param {string} str
+ * @returns {boolean}
+ */
+export function isValidIP (str: string): boolean {
+  // Regular expression to check if string is a IP address
+  const regexExp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
+
+  return regexExp.test(str);
 }

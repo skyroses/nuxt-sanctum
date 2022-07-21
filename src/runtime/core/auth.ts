@@ -12,6 +12,7 @@ import { sha256 } from '../utils';
 import { User } from '../types';
 import { Storage } from './storage';
 import { RequestHandler } from './request';
+import { Fingerprint } from './fingerprint';
 
 export class Auth {
   public storage: Storage;
@@ -20,6 +21,7 @@ export class Auth {
   public req: IncomingMessage;
   public res: ServerResponse;
   public requestHandler: RequestHandler;
+  protected fingerprint: Fingerprint;
 
   constructor (
     public nuxt: NuxtApp,
@@ -35,6 +37,7 @@ export class Auth {
     this.storage = new Storage(nuxt, options).initStore();
     this.requestHandler = new RequestHandler(this);
     this.scheme = this.makeScheme(options.tokenScheme);
+    this.fingerprint = new Fingerprint(this);
   }
 
   get user () {
@@ -57,9 +60,9 @@ export class Auth {
     return this.nuxt.$axios;
   }
 
-  run () {
-    if (process.server && this.options.fingerprint?.enabled) {
-      const fingerprint = this.generateFingerprint();
+  async run () {
+    if (this.options.fingerprint?.enabled) {
+      const fingerprint = await this.fingerprint.generate();
       this.storage.store.setFingerprint(fingerprint);
     }
 
@@ -90,15 +93,5 @@ export class Auth {
 
   private makeScheme (options: TokenSchemeOptions) {
     return new TokenScheme(this, options);
-  }
-
-  private generateFingerprint () {
-    const userAgent = this.req.headers['user-agent'];
-    const ip = this.req.headers['x-forwarded-for'] || this.req.socket.remoteAddress;
-
-    return sha256([
-      ip,
-      userAgent
-    ].join('|'));
   }
 }

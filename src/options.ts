@@ -1,3 +1,4 @@
+import { AxiosError, AxiosRequestConfig } from 'axios';
 import { TokenSchemeOptions } from './runtime';
 
 export interface ModuleOptions {
@@ -6,6 +7,10 @@ export interface ModuleOptions {
   fingerprint?: {
     enabled?: boolean;
     property?: string;
+    ipService?: {
+      endpoint: AxiosRequestConfig;
+      property?: string | false;
+    }
   };
   pinia?: {
     namespace?: string;
@@ -16,7 +21,8 @@ export interface ModuleOptions {
     afterLogin: string;
     afterLogout: string;
   },
-  tokenScheme: TokenSchemeOptions
+  tokenScheme: TokenSchemeOptions;
+  onError?: (error: AxiosError) => void;
 };
 
 export const defaultOptions: ModuleOptions = {
