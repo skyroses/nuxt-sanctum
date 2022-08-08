@@ -61,8 +61,12 @@ export class Auth {
   }
 
   async run () {
-    if (this.options.fingerprint?.enabled) {
-      const fingerprint = await this.fingerprint.generate();
+    let fingerprint: string | null;
+
+    if (this.options.fingerprint?.enabled &&
+        !this.storage.store.fingerprint &&
+        (fingerprint = await this.fingerprint.generate())
+    ) {
       this.storage.store.setFingerprint(fingerprint);
     }
 
