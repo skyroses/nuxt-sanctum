@@ -2,13 +2,12 @@
  * @todo Cookie Scheme
  */
 
-import { NuxtApp, useRouter } from 'nuxt/app';
+import { NuxtApp, useRouter, useRequestEvent } from 'nuxt/app';
 import { Router } from 'vue-router';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosError, AxiosRequestConfig } from 'axios';
 import { IncomingMessage, ServerResponse } from 'h3';
 import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme, TokenSchemeOptions } from '../schemes';
-import { sha256 } from '../utils';
 import { User } from '../types';
 import { Storage } from './storage';
 import { RequestHandler } from './request';
@@ -27,17 +26,16 @@ export class Auth {
     public nuxt: NuxtApp,
     public options: ModuleOptions & { moduleName: string }
   ) {
-    // @ts-ignore
-    this.req = nuxt?.ssrContext?.event.req;
-    // @ts-ignore
-    this.res = nuxt?.ssrContext?.event.res;
+    this.req = useRequestEvent()?.req;
+    this.res = useRequestEvent()?.res;
 
     this.router = useRouter();
 
-    this.storage = new Storage(nuxt, options).initStore();
     this.requestHandler = new RequestHandler(this);
     this.scheme = this.makeScheme(options.tokenScheme);
     this.fingerprint = new Fingerprint(this);
+
+    this.storage = new Storage(nuxt, options).initStore();
   }
 
   get user () {
@@ -61,26 +59,34 @@ export class Auth {
   }
 
   async run () {
-    let fingerprint: string | null;
+    try {
+      let fingerprint: string | null;
 
-    if (this.options.fingerprint?.enabled &&
+      if (this.options.fingerprint?.enabled &&
         !this.storage.store.fingerprint &&
         (fingerprint = await this.fingerprint.generate())
-    ) {
-      this.storage.store.setFingerprint(fingerprint);
-    }
+      ) {
+        this.storage.store.setFingerprint(fingerprint);
+      }
 
-    return this.scheme.refreshToken();
+      return this.scheme.refreshToken();
+    } catch (e) {
+      this.callErrorHandle(e);
+    }
   }
 
   async login (payload: any) {
-    await this.scheme.login(payload);
-    await this.redirectTo('afterLogin');
+    const response = await this.scheme.login(payload);
+    this.redirectTo('afterLogin');
+
+    return response;
   }
 
   async logout () {
-    await this.redirectTo('afterLogout');
-    await this.scheme.logout();
+    const response = await this.scheme.logout();
+    this.redirectTo('afterLogout');
+
+    return response;
   }
 
   request (endpoint: AxiosRequestConfig) {
@@ -97,5 +103,11 @@ export class Auth {
 
   private makeScheme (options: TokenSchemeOptions) {
     return new TokenScheme(this, options);
+  }
+
+  private callErrorHandle (e: AxiosError<any>) {
+    if (this.options.onError) {
+      this.options.onError(e);
+    }
   }
 }

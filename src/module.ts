@@ -17,15 +17,14 @@ export default defineNuxtModule<ModuleOptions>({
       ..._options
     };
 
-    const resolver = createResolver(import.meta.url)
+    const resolver = createResolver(import.meta.url);
 
     nuxt.options.build.transpile.push(resolver.resolve('./runtime'));
-    nuxt.options.alias['#sanctumruntime'] = resolver.resolve('./runtime');;
+    nuxt.options.alias['#sanctumruntime'] = resolver.resolve('./runtime');
 
-    const composables = resolver.resolve('./runtime/composables/use-auth');
     addAutoImport([
       {
-        from: composables, name: 'useAuth'
+        from: resolver.resolve('./runtime/composables/use-auth'), name: 'useAuth'
       }
     ]);
 

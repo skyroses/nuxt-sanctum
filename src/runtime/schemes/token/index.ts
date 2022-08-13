@@ -31,16 +31,18 @@ export class TokenScheme extends Scheme {
     return response;
   }
 
-  logout () {
+  async logout () {
     const endpoint = this.options.endpoints?.logout;
 
     if (!endpoint) {
       return;
     }
 
+    const response = await this.auth.request(endpoint);
+
     this.reset();
 
-    return this.auth.request(endpoint);
+    return response;
   }
 
   updateToken (response: SanctumAuthResponse) {
@@ -73,23 +75,17 @@ export class TokenScheme extends Scheme {
 
     this.reset();
 
-    try {
-      const response = await this.tokenRequest(endpoint);
+    const response = await this.tokenRequest(endpoint);
 
-      if (!response) {
-        return;
-      }
-
-      if (process.server && !this.auth.res.writableEnded) {
-        this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
-      }
-
-      await this.fetchUser();
-    } catch (e) {
-      if (this.auth.options.onError) {
-        this.auth.options.onError(e);
-      }
+    if (!response) {
+      return;
     }
+
+    if (process.server && !this.auth.res.writableEnded) {
+      this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
+    }
+
+    await this.fetchUser();
   }
 
   check () {
