@@ -32,6 +32,7 @@
     "@pinia/nuxt": "^0.3.0",
     "axios": "^0.26.1",
     "h3": "^0.7.4",
+    "lodash-es": "^4.17.21",
     "pinia": "^2.0.16",
     "requrl": "^3.0.2",
     "vue-router": "^4.0.14"
@@ -39,6 +40,7 @@
   "devDependencies": {
     "@nuxt/module-builder": "latest",
     "@nuxtjs/eslint-config-typescript": "latest",
+    "@types/lodash-es": "^4.17.6",
     "eslint": "latest",
     "nuxt": "^3.0.0-rc.6"
   }

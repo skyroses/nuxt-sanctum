@@ -73,19 +73,23 @@ export class TokenScheme extends Scheme {
       return;
     }
 
-    this.reset();
+    try {
+      const response = await this.tokenRequest(endpoint);
 
-    const response = await this.tokenRequest(endpoint);
+      if (!response) {
+        return;
+      }
 
-    if (!response) {
-      return;
+      if (process.server && !this.auth.res.writableEnded) {
+        this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
+      }
+
+      await this.fetchUser();
+    } catch (e) {
+      if (this.auth.options.onError) {
+        this.auth.options.onError(e);
+      }
     }
-
-    if (process.server && !this.auth.res.writableEnded) {
-      this.auth.res.setHeader('set-cookie', response.headers['set-cookie'] ?? []);
-    }
-
-    await this.fetchUser();
   }
 
   check () {

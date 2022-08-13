@@ -59,20 +59,16 @@ export class Auth {
   }
 
   async run () {
-    try {
-      let fingerprint: string | null;
+    let fingerprint: string | null;
 
-      if (this.options.fingerprint?.enabled &&
-        !this.storage.store.fingerprint &&
-        (fingerprint = await this.fingerprint.generate())
-      ) {
-        this.storage.store.setFingerprint(fingerprint);
-      }
-
-      return this.scheme.refreshToken();
-    } catch (e) {
-      this.callErrorHandle(e);
+    if (this.options.fingerprint?.enabled &&
+      !this.storage.store.fingerprint &&
+      (fingerprint = await this.fingerprint.generate())
+    ) {
+      this.storage.store.setFingerprint(fingerprint);
     }
+
+    return this.scheme.refreshToken();
   }
 
   async login (payload: any) {
@@ -103,11 +99,5 @@ export class Auth {
 
   private makeScheme (options: TokenSchemeOptions) {
     return new TokenScheme(this, options);
-  }
-
-  private callErrorHandle (e: AxiosError<any>) {
-    if (this.options.onError) {
-      this.options.onError(e);
-    }
   }
 }
