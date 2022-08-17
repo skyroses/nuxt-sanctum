@@ -22,7 +22,6 @@ export interface ModuleOptions {
     afterLogout: string;
   },
   tokenScheme: TokenSchemeOptions;
-  onError?: (error: AxiosError) => void;
 };
 
 export const defaultOptions: ModuleOptions = {

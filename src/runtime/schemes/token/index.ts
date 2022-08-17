@@ -77,7 +77,7 @@ export class TokenScheme extends Scheme {
       const response = await this.tokenRequest(endpoint);
 
       if (!response) {
-        return;
+        return response;
       }
 
       if (process.server && !this.auth.res.writableEnded) {
@@ -85,11 +85,9 @@ export class TokenScheme extends Scheme {
       }
 
       await this.fetchUser();
-    } catch (e) {
-      if (this.auth.options.onError) {
-        this.auth.options.onError(e);
-      }
-    }
+
+      return response;
+    } catch (e) {}
   }
 
   check () {
@@ -116,12 +114,15 @@ export class TokenScheme extends Scheme {
     return this.auth.storage.store.expired_at;
   }
 
-  private async tokenRequest (endpoint: AxiosRequestConfig) {
-    const response = await this.auth.request(endpoint);
-
-    this.updateToken(response);
-
-    return response;
+  private tokenRequest (endpoint: AxiosRequestConfig) {
+    return new Promise<SanctumAuthResponse>((resolve, reject) => {
+      this.auth.request(endpoint)
+        .then((response) => {
+          this.updateToken(response);
+          resolve(response);
+        })
+        .catch(error => reject(error));
+    });
   }
 }
 

@@ -78,3 +78,15 @@ export function isValidIP (str: string): boolean {
 
   return regexExp.test(str);
 }
+
+export function tryParseJSON (jsonString: any) {
+  try {
+    const o = JSON.parse(jsonString);
+
+    if (o && typeof o === 'object') {
+      return o;
+    }
+  } catch (e) { }
+
+  return jsonString;
+};
