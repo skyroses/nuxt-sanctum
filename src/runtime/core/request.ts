@@ -37,7 +37,7 @@ export class RequestHandler {
         const response = await this.auth.scheme.refreshToken();
 
         if (!response) {
-          return Promise.reject(error);
+          return;
         }
 
         config.headers[RETRY_REQUEST_HEADER] = true;
