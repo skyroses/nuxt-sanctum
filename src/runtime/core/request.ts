@@ -36,6 +36,10 @@ export class RequestHandler {
       if (error.response.status === 401 && !config.headers[RETRY_REQUEST_HEADER]) {
         const response = await this.auth.scheme.refreshToken();
 
+        if (!response) {
+          return Promise.reject(error);
+        }
+
         config.headers[RETRY_REQUEST_HEADER] = true;
 
         const token = <string>getProp(response.data, this.auth.scheme.options.token.property);
