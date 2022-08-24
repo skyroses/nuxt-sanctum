@@ -29,11 +29,15 @@ export class RequestHandler {
       const { config } = error;
       const refreshTokensConfig = this.auth.options.tokenScheme.endpoints?.refresh;
 
-      if (refreshTokensConfig && config.url === refreshTokensConfig.url) {
+      if (!config || !refreshTokensConfig) {
         return Promise.reject(error);
       }
 
-      if (error.response.status === 401 && !config.headers[RETRY_REQUEST_HEADER]) {
+      if (config.url === refreshTokensConfig.url) {
+        return Promise.reject(error);
+      }
+
+      if (error.response?.status === 401 && !config.headers[RETRY_REQUEST_HEADER]) {
         const response = await this.auth.scheme.refreshToken();
 
         if (!response) {
