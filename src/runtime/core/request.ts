@@ -1,5 +1,4 @@
 import { AxiosError, AxiosRequestConfig } from 'axios';
-import requrl from 'requrl';
 import { SanctumAuthResponse } from '../types';
 import { getProp, tryParseJSON } from '../utils';
 import { Auth } from './auth';
@@ -70,7 +69,9 @@ export class RequestHandler {
       return;
     }
 
-    endpoint.baseURL = this.auth.options.baseURL;
+    if (this.auth.options.baseURL) {
+      endpoint.baseURL = this.auth.options.baseURL;
+    }
 
     if (this.auth.options.fingerprint.enabled && this.auth.storage.store.fingerprint) {
       endpoint.data = Object.assign(
@@ -81,10 +82,6 @@ export class RequestHandler {
     }
 
     if (process.server) {
-      if (!endpoint.baseURL) {
-        endpoint.baseURL = requrl(this.auth.req);
-      }
-
       endpoint.headers = { ...endpoint.headers, 'User-Agent': this.auth?.req.headers['user-agent'] };
     }
 
