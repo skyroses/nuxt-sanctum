@@ -1,6 +1,4 @@
-import { resolve } from 'path';
-import { fileURLToPath } from 'url';
-import { defineNuxtModule, addPluginTemplate, createResolver, addAutoImport } from '@nuxt/kit';
+import { defineNuxtModule, addPluginTemplate, createResolver, addImports } from '@nuxt/kit';
 import { defaultOptions, ModuleOptions } from './options';
 
 export const moduleName = '@plenexy/nuxt-sanctum';
@@ -22,7 +20,7 @@ export default defineNuxtModule<ModuleOptions>({
     nuxt.options.build.transpile.push(resolver.resolve('./runtime'));
     nuxt.options.alias['#sanctumruntime'] = resolver.resolve('./runtime');
 
-    addAutoImport([
+    addImports([
       {
         from: resolver.resolve('./runtime/composables/use-auth'), name: 'useAuth'
       }
