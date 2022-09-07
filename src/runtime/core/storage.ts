@@ -1,4 +1,4 @@
-import { NuxtApp } from 'nuxt/app';
+import { NuxtApp } from '#app/nuxt';
 import { defineStore, Pinia } from 'pinia';
 import { ModuleOptions } from '../../options';
 import { AuthStore } from '..';

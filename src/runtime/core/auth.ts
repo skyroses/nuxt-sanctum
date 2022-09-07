@@ -2,16 +2,17 @@
  * @todo Cookie Scheme
  */
 
-import { NuxtApp, useRouter, useRequestEvent } from 'nuxt/app';
 import { Router } from 'vue-router';
-import { AxiosError, AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig } from 'axios';
 import { IncomingMessage, ServerResponse } from 'h3';
+import { NuxtApp } from '#app/nuxt';
 import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme, TokenSchemeOptions } from '../schemes';
 import { User } from '../types';
 import { Storage } from './storage';
 import { RequestHandler } from './request';
 import { Fingerprint } from './fingerprint';
+import { useRouter, useRequestEvent } from '#imports';
 
 export class Auth {
   public storage: Storage;

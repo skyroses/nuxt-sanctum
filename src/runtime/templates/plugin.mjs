@@ -1,5 +1,5 @@
-import { defineNuxtPlugin } from 'nuxt/app';
-import { Auth } from '#sanctumruntime/core/auth';
+import { defineNuxtPlugin } from '#imports';
+import { Auth } from '#sanctum/runtime/core/auth';
 
 export default defineNuxtPlugin(async (nuxtApp) => {
   const options = JSON.parse('<%= JSON.stringify(options) %>');
