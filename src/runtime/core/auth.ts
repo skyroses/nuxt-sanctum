@@ -72,9 +72,12 @@ export class Auth {
     return this.scheme.refreshToken();
   }
 
-  async login (payload: any) {
+  async login (payload: any, redirect = true) {
     const response = await this.scheme.login(payload);
-    this.redirectTo('afterLogin');
+
+    if (redirect) {
+      await this.redirectTo('afterLogin');
+    }
 
     return response;
   }
