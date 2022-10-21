@@ -72,19 +72,22 @@ export class Auth {
     return this.scheme.refreshToken();
   }
 
-  async login (payload: any, redirect = true) {
+  async login (payload: any, redirect = true, nativeRedirect = false) {
     const response = await this.scheme.login(payload);
 
     if (redirect) {
-      await this.redirectTo('afterLogin');
+      await this.redirectTo('afterLogin', nativeRedirect);
     }
 
     return response;
   }
 
-  async logout () {
+  async logout (redirect = true, nativeRedirect = false) {
     const response = await this.scheme.logout();
-    this.redirectTo('afterLogout');
+
+    if (redirect) {
+      this.redirectTo('afterLogout', nativeRedirect);
+    }
 
     return response;
   }
@@ -93,7 +96,14 @@ export class Auth {
     return this.requestHandler.send(endpoint);
   }
 
-  async redirectTo (name: keyof typeof defaultOptions.redirects) {
+  async redirectTo (name: keyof typeof defaultOptions.redirects, native = false) {
+    if (native && process.client) {
+      const router = this.router.resolve(this.getRedirectRoute(name));
+
+      window.location.href = router.href;
+      return;
+    }
+
     return await this.router.push(this.getRedirectRoute(name));
   }
 
