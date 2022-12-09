@@ -27,19 +27,19 @@
     "test": "echo \"No test specified\""
   },
   "dependencies": {
-    "@nuxt/kit": "^3.0.0-rc.9",
-    "@nuxtjs-alt/axios": "^1.0.12",
-    "@pinia/nuxt": "^0.4.1",
-    "axios": "^0.26.1",
-    "h3": "^0.7.4",
-    "pinia": "^2.0.21",
+    "@nuxt/kit": "^3.0.0",
+    "@nuxtjs-alt/axios": "^1.1.0",
+    "@pinia/nuxt": "^0.4.6",
+    "axios": "^1.2.1",
+    "h3": "^1.0.1",
+    "pinia": "^2.0.27",
     "requrl": "^3.0.2",
-    "vue-router": "^4.0.14"
+    "vue-router": "^4.1.6"
   },
   "devDependencies": {
     "@nuxt/module-builder": "latest",
     "@nuxtjs/eslint-config-typescript": "latest",
     "eslint": "latest",
-    "nuxt": "^3.0.0-rc.9"
+    "nuxt": "^3.0.0"
   }
 }

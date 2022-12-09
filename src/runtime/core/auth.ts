@@ -4,7 +4,7 @@
 
 import { Router } from 'vue-router';
 import { AxiosRequestConfig } from 'axios';
-import { IncomingMessage, ServerResponse } from 'h3';
+import { NodeIncomingMessage, NodeServerResponse } from 'h3';
 import { NuxtApp } from '#app/nuxt';
 import { defaultOptions, ModuleOptions } from '../../options';
 import { TokenScheme, TokenSchemeOptions } from '../schemes';
@@ -18,8 +18,8 @@ export class Auth {
   public storage: Storage;
   public scheme: TokenScheme;
   public router: Router;
-  public req: IncomingMessage;
-  public res: ServerResponse;
+  public req: NodeIncomingMessage;
+  public res: NodeServerResponse;
   public requestHandler: RequestHandler;
   protected fingerprint: Fingerprint;
 
